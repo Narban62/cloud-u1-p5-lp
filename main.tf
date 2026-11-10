@@ -6,8 +6,8 @@ provider "aws" {
 }
 
 resource "aws_security_group" "mi-sg"{
-  name = "mi-security-group-terraform"
-  description = "security group para mi instancia de terraform"
+  name = "mi-security-group-terraform-windows"
+  description = "security group para windows mi instancia de terraform"
   vpc_id = "vpc-00344cfd6c2e4f068" #id del vpc dond ese crara el security group
   #regla de entrada para ssh
   ingress {
@@ -34,11 +34,11 @@ resource "aws_security_group" "mi-sg"{
 #declaracion de los recursos a aprovisioner de aws
 resource "aws_instance" "mi_instancia" {
 
-  ami = "ami-0c230065b91270bc6" #id de la imagen de amazon linux 2
-  instance_type = "t2.micro" #tipo de instancia
+  ami = "ami-0b5f645abc199e666" #id de la imagen de windows server 2025
+  instance_type = "t3.medium" #tipo de instancia
   key_name = "mi-segunda-llaves" #nombre de par de claves para acceder
   tags = {
-    Name = "MiInstanciaTerraform2" #etiqueta para identificar la instancia
+    Name = "MiInstanciaTerraformWindows" #etiqueta para identificar la instancia
   }
   vpc_security_group_ids = [aws_security_group.mi-sg.id] #asignamos el security group a la instancia
 
