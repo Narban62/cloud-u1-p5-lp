@@ -1,13 +1,12 @@
 #Terraforn no solo sirve para aprovsioner recurso de los vendors de nube
 #configuracion del provedor
 provider "aws" {
-  region = "us-east-1" #region donde se desplegaran los recursos
-
+  region = var.region #region donde se desplegaran los recursos
 }
 
-resource "aws_security_group" "mi-sg"{
-  name = "mi-security-group-terraform-windows"
-  description = "security group para windows mi instancia de terraform"
+resource "aws_security_group" "mi-sg-efs"{
+  name = "mi-security-group-terraform-efs"
+  description = "security group para mi instancia de terraform"
   vpc_id = "vpc-00344cfd6c2e4f068" #id del vpc dond ese crara el security group
   #regla de entrada para ssh
   ingress {
@@ -32,15 +31,16 @@ resource "aws_security_group" "mi-sg"{
   }
 }
 #declaracion de los recursos a aprovisioner de aws
-resource "aws_instance" "mi_instancia" {
+resource "aws_instance" "mi_instancia_efs" {
 
-  ami = "ami-0b5f645abc199e666" #id de la imagen de windows server 2025
-  instance_type = "t3.medium" #tipo de instancia
-  key_name = "mi-segunda-llaves" #nombre de par de claves para acceder
+  ami = var.ami_id #id de la imagen de amazon linux 2
+  instance_type = var.instance_type #tipo de instancia
+  key_name = var.key_name #nombre de par de claves para acceder
+  security_groups = [aws_security_group.mi-sg-efs.name]
   tags = {
-    Name = "MiInstanciaTerraformWindows" #etiqueta para identificar la instancia
+    Name = "Mi instancia EFS - ${count.index + 1}" #etiqueta para identificar la instancia
   }
-  vpc_security_group_ids = [aws_security_group.mi-sg.id] #asignamos el security group a la instancia
-
-
+  vpc_security_group_ids = [aws_security_group.mi-sg-efs.id] #asignamos el security group a la instancia
+  count = var.cantidad_instancias
+  
 }
